@@ -130,14 +130,14 @@ event-planner/
 ## SESSION 6 — Gemini Layer
 **What gets built:** `geminiService.js`, prompt files, output validation, fallback, cache.
 
-- [ ] `geminiService.js` using `@google/genai`, key read from env, server-side only
-- [ ] Prompt files in `backend/src/prompts/` (system instruction + user context builder)
-- [ ] Notes field wrapped as untrusted data, with prompt-injection guard line
-- [ ] Structured JSON output (response schema) + zod validation of the LLM response
-- [ ] Timeout (~15s), `maxOutputTokens`, one retry on invalid JSON
-- [ ] **Fallback:** on any Gemini failure return rules-only plan with `aiEnhanced: false`
-- [ ] In-memory cache (hash of normalised input, short TTL)
-- [ ] Tests with Gemini **mocked**: success, malformed JSON, timeout, error → fallback
+- [x] `geminiService.js` using `@google/genai`, key read from env, server-side only
+- [x] Prompt files in `backend/src/prompts/` (system instruction + user context builder)
+- [x] Notes field wrapped as untrusted data, with prompt-injection guard line
+- [x] Structured JSON output (response schema) + zod validation of the LLM response
+- [x] Timeout (~15s), `maxOutputTokens`, one retry on invalid JSON
+- [x] **Fallback:** on any Gemini failure return rules-only plan with `aiEnhanced: false`
+- [x] In-memory cache (hash of normalised input, short TTL)
+- [x] Tests with Gemini **mocked**: success, malformed JSON, timeout, error → fallback
 - [ ] Manual test with the real key: 3 different event types give sensible output
 
 > ✅ **YOU TEST:** With a real API key, `POST /api/plan` returns `aiEnhanced: true` and the `ai` block has summary/themeIdeas. Temporarily set a bad key → returns full plan with `aiEnhanced: false` and a clear notice. Run `npm test` — all mocked Gemini tests pass.
@@ -345,3 +345,4 @@ Drop in this order: dark mode bonus → optional seasonal-awareness extras → v
 | 2026-10-30 | Session 3 | Rules engine budget allocation (priority shifts, category floors >= 2%, contingency floor >= 5%, exact integer sum matching input budget, function add-on lines, outdoor allowance), deterministic trade-off engine, city-tier budget health calculator, and 8 comprehensive unit tests | None. All 34 tests and lint pass cleanly. |
 | 2026-10-30 | Session 4 | Rules engine timeline generator (drops past milestones, carries forward critical tasks, wedding add-on milestones), Panic Mode engine (< 14 days into bookToday/doThisWeek/canSkip), vendor checklist engine with dietary (Jain/vegan/halal/veg) & venue customizations, deterministic warning engine, and master orchestrator | None. All 45 tests and lint pass cleanly. |
 | 2026-10-30 | Session 5 | Full POST /api/plan endpoint, planController, 10 req/min/IP rate limiter with standardized 429 error shape, production static frontend serving wired in Express, Helmet headers, and 4 supertest integration tests | None. All 49 tests and lint pass cleanly. |
+| 2026-10-30 | Session 6 | Gemini AI integration using @google/genai, aiEnrichmentSchema with Zod validation, prompt injection defense with <untrusted_user_notes>, 15s timeout & retry, deterministic in-memory cache, graceful non-blocking fallback to rules-only plan, and 10 unit tests with mocked AI client | None. All 59 tests and lint pass cleanly. |
