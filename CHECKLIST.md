@@ -45,9 +45,9 @@ event-planner/
         └── __tests__/
 ```
 
-- [ ] Structure created exactly as above
-- [ ] Root `package.json` scripts work: `npm run dev`, `npm run build`, `npm start`, `npm test`, `npm run lint`
-- [ ] In production, Express serves `frontend/dist` → **one live URL**
+- [x] Structure created exactly as above
+- [x] Root `package.json` scripts work: `npm run dev`, `npm run build`, `npm start`, `npm test`, `npm run lint`
+- [x] In production, Express serves `frontend/dist` → **one live URL**
 
 ---
 
@@ -62,16 +62,16 @@ event-planner/
 **What gets built:** Folder structure, package configs, git files, ESLint/Prettier, CI workflow.
 
 ### Phase 1 — Setup
-- [ ] Create GitHub repo, set to **Public**
-- [ ] Only branch is `main` (verify: `git branch -a` shows one)
-- [ ] `.gitignore` covers: `node_modules`, `dist`, `.env`, `*.log`, `coverage`, OS/editor files
-- [ ] `.env.example` with: `GEMINI_API_KEY=`, `GEMINI_MODEL=`, `PORT=`, `CORS_ORIGIN=`, `NODE_ENV=`
-- [ ] Real `.env` created locally, **never committed** (check `git log -p` for leaked keys)
-- [ ] Gemini API key created in Google AI Studio; free-tier Flash model name noted in `.env.example`
-- [ ] ESLint + Prettier configured for both folders
-- [ ] Vitest coverage reporting configured; `npm test -- --coverage` (or documented equivalent) works
-- [ ] GitHub Actions workflow at `.github/workflows/ci.yml` runs lint and tests on pushes / pull requests to `main`
-- [ ] First commit pushed
+- [x] Create GitHub repo, set to **Public**
+- [x] Only branch is `main` (verify: `git branch -a` shows one)
+- [x] `.gitignore` covers: `node_modules`, `dist`, `.env`, `*.log`, `coverage`, OS/editor files
+- [x] `.env.example` with: `GEMINI_API_KEY=`, `GEMINI_MODEL=`, `PORT=`, `CORS_ORIGIN=`, `NODE_ENV=`
+- [x] Real `.env` created locally, **never committed** (check `git log -p` for leaked keys)
+- [x] Gemini API key created in Google AI Studio; free-tier Flash model name noted in `.env.example`
+- [x] ESLint + Prettier configured for both folders
+- [x] Vitest coverage reporting configured; `npm test -- --coverage` (or documented equivalent) works
+- [x] GitHub Actions workflow at `.github/workflows/ci.yml` runs lint and tests on pushes / pull requests to `main`
+- [x] First commit pushed
 
 > ✅ **YOU TEST:** Run `npm run lint` and `npm test` — both should exit cleanly. Check folder structure matches the tree above.
 
@@ -80,12 +80,12 @@ event-planner/
 ## SESSION 2 — Backend: Config & Zod Schema
 **What gets built:** `eventConfig.js` with all constants + zod request schema.
 
-- [ ] Express app split into `app.js` / `index.js`
-- [ ] Env config loader (fails fast if required vars missing in production)
-- [ ] `eventConfig.js` with all budget percentages, timeline offsets, vendor lists, metro / tier-2 / tier-3 cost thresholds, and other configurable constants
-- [ ] zod schema for plan request (rejects past dates, bad budget, guests outside 1–2000, unknown fields, notes > 500 chars)
-- [ ] `GET /api/health` returns `{ "status": "ok" }`
-- [ ] Central error handler with consistent error shape
+- [x] Express app split into `app.js` / `index.js`
+- [x] Env config loader (fails fast if required vars missing in production)
+- [x] `eventConfig.js` with all budget percentages, timeline offsets, vendor lists, metro / tier-2 / tier-3 cost thresholds, and other configurable constants
+- [x] zod schema for plan request (rejects past dates, bad budget, guests outside 1–2000, unknown fields, notes > 500 chars)
+- [x] `GET /api/health` returns `{ "status": "ok" }`
+- [x] Central error handler with consistent error shape
 
 > ✅ **YOU TEST:** Hit `GET http://localhost:4000/api/health` → gets `{"status":"ok"}`. Try sending a bad POST body (past date, negative budget) and confirm it returns a 400 with a proper error shape.
 
@@ -94,10 +94,10 @@ event-planner/
 ## SESSION 3 — Rules Engine: Budget Allocation
 **What gets built:** Budget allocation module with priority shifts, floors, add-ons, and rounding.
 
-- [ ] Rules engine: **budget allocation** (priorities shift, floors, contingency ≥ 5%, sums exactly to budget)
-- [ ] Rules engine: **function add-ons** (Haldi / Mehndi / Sangeet each add one budget line and relevant timeline tasks)
-- [ ] Rules engine: **trade-off suggestions** (deterministic, priority-aware, preserve budget sum and allocation constraints)
-- [ ] Unit tests: allocation sums to input; priority shifts; floors; contingency ≥ 5%; add-ons preserve total; trade-offs valid
+- [x] Rules engine: **budget allocation** (priorities shift, floors, contingency ≥ 5%, sums exactly to budget)
+- [x] Rules engine: **function add-ons** (Haldi / Mehndi / Sangeet each add one budget line and relevant timeline tasks)
+- [x] Rules engine: **trade-off suggestions** (deterministic, priority-aware, preserve budget sum and allocation constraints)
+- [x] Unit tests: allocation sums to input; priority shifts; floors; contingency ≥ 5%; add-ons preserve total; trade-offs valid
 
 > ✅ **YOU TEST:** Run `npm test` — all budget unit tests pass. Confirm for a ₹8,00,000 wedding with 150 guests, budget rows sum exactly to 800000.
 
@@ -106,11 +106,11 @@ event-planner/
 ## SESSION 4 — Rules Engine: Timeline, Vendors & Warnings
 **What gets built:** Timeline milestones, vendor checklist, warnings, and panic mode logic.
 
-- [ ] Rules engine: **timeline** (offsets back from event date, drops past milestones, compressed-timeline mode)
-- [ ] Rules engine: **vendor checklist** (filters by priorities, venue preference, dietary needs)
-- [ ] Rules engine: **warnings** (city-tier-aware per-guest budget, close date, outdoor/season risk)
-- [ ] Rules engine: **panic mode grouping** for events fewer than 14 days away (today / this week / can skip)
-- [ ] Unit tests: past milestones handled; close dates compressed; under-14-day panic mode; add-on tasks; city-tier differences; Lucknow = tier-2; unknown city = default
+- [x] Rules engine: **timeline** (offsets back from event date, drops past milestones, compressed-timeline mode)
+- [x] Rules engine: **vendor checklist** (filters by priorities, venue preference, dietary needs)
+- [x] Rules engine: **warnings** (city-tier-aware per-guest budget, close date, outdoor/season risk)
+- [x] Rules engine: **panic mode grouping** for events fewer than 14 days away (today / this week / can skip)
+- [x] Unit tests: past milestones handled; close dates compressed; under-14-day panic mode; add-on tasks; city-tier differences; Lucknow = tier-2; unknown city = default
 
 > ✅ **YOU TEST:** Run `npm test` — all rules-engine tests pass. Try an event 7 days away and confirm `panicMode.enabled: true` with tasks split into 3 groups.
 
@@ -119,9 +119,9 @@ event-planner/
 ## SESSION 5 — Backend API: `/api/plan` (Rules Only)
 **What gets built:** Full `POST /api/plan` endpoint returning the deterministic plan (no AI yet).
 
-- [ ] `POST /api/plan` returns rules-only plan (all sections: budget, timeline, vendors, warnings, tradeoffs, budgetHealth, panicMode)
-- [ ] API tests (supertest): happy path; validation 400; rate-limit 429; correct error shape
-- [ ] Rate limiter middleware: `helmet`, CORS allow-list, JSON body limit (~10 KB), `10 req/min/IP`
+- [x] `POST /api/plan` returns rules-only plan (all sections: budget, timeline, vendors, warnings, tradeoffs, budgetHealth, panicMode)
+- [x] API tests (supertest): happy path; validation 400; rate-limit 429; correct error shape
+- [x] Rate limiter middleware: `helmet`, CORS allow-list, JSON body limit (~10 KB), `10 req/min/IP`
 
 > ✅ **YOU TEST:** `POST /api/plan` with the sample body from the spec → returns full plan JSON with `aiEnhanced: false`. Validation errors return 400. Headers include Helmet security headers.
 
@@ -340,4 +340,8 @@ Drop in this order: dark mode bonus → optional seasonal-awareness extras → v
 
 | Date | Session | Done | Blockers / notes |
 |---|---|---|---|
-| | | | |
+| 2026-10-30 | Session 1 | Project scaffold, backend & frontend configs, lint/test setup, CI workflow, initial git push | None. All root & workspace lint and tests pass cleanly. |
+| 2026-10-30 | Session 2 | Backend config (eventConfig.js, env.js), strict planRequestSchema with Zod, validateBody middleware, central errorHandler, modular health route, and 25 unit/integration tests | None. All tests and lint pass cleanly. |
+| 2026-10-30 | Session 3 | Rules engine budget allocation (priority shifts, category floors >= 2%, contingency floor >= 5%, exact integer sum matching input budget, function add-on lines, outdoor allowance), deterministic trade-off engine, city-tier budget health calculator, and 8 comprehensive unit tests | None. All 34 tests and lint pass cleanly. |
+| 2026-10-30 | Session 4 | Rules engine timeline generator (drops past milestones, carries forward critical tasks, wedding add-on milestones), Panic Mode engine (< 14 days into bookToday/doThisWeek/canSkip), vendor checklist engine with dietary (Jain/vegan/halal/veg) & venue customizations, deterministic warning engine, and master orchestrator | None. All 45 tests and lint pass cleanly. |
+| 2026-10-30 | Session 5 | Full POST /api/plan endpoint, planController, 10 req/min/IP rate limiter with standardized 429 error shape, production static frontend serving wired in Express, Helmet headers, and 4 supertest integration tests | None. All 49 tests and lint pass cleanly. |

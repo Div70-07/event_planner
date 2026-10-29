@@ -2,6 +2,15 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { env } from './config/env.js';
+import healthRouter from './routes/health.js';
+import planRouter from './routes/plan.js';
+import { errorHandler } from './middleware/errorHandler.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -9,15 +18,11 @@ const app = express();
 app.use(helmet());
 
 // CORS — allow-list from environment
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
-  .split(',')
-  .map((o) => o.trim());
-
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. curl, same-origin in production)
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (e.g. curl, server-to-server, or same-origin)
+      if (!origin || env.corsOrigin.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
@@ -28,29 +33,41 @@ app.use(
   })
 );
 
-// Body parsing — hard limit ~10 KB
+// Body parsing — hard limit 10 KB
 app.use(express.json({ limit: '10kb' }));
 
 // gzip compression
 app.use(compression());
 
-// ── Routes (added in later sessions) ──────────────────────────────────────────
-// Placeholder health route
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
+// API Routes
+app.use('/api', healthRouter);
+app.use('/api', planRouter);
 
-// ── Error handler ──────────────────────────────────────────────────────────────
-// eslint-disable-next-line no-unused-vars
-app.use((err, _req, res, _next) => {
-  console.error(err.message);
-  res.status(err.status || 500).json({
+// Static frontend serving in production (single live URL deployment)
+if (env.isProduction) {
+  const distPath = path.resolve(__dirname, '../../../frontend/dist');
+  app.use(express.static(distPath));
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
+// 404 Handler for unmatched API routes
+app.use((req, res) => {
+  res.status(404).json({
     error: {
-      code: err.code || 'INTERNAL_ERROR',
-      message: err.message || 'An unexpected error occurred.',
-      details: err.details || [],
+      code: 'NOT_FOUND',
+      message: `Cannot ${req.method} ${req.originalUrl}`,
+      details: [],
     },
   });
 });
+
+// Central Error Handler
+app.use(errorHandler);
 
 export { app };
