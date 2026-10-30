@@ -10,7 +10,7 @@
  */
 export async function generatePlanApi(planInput) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s client timeout
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120s client timeout
 
   try {
     const res = await fetch('/api/plan', {

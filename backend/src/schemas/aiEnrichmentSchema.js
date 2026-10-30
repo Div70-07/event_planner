@@ -1,7 +1,8 @@
+
 import { z } from 'zod';
 
 /**
- * Strict Zod schema for validating the Gemini AI enrichment JSON payload.
+ * Strict Zod schema for validating AI enrichment JSON payload.
  * AI may ONLY enrich qualitative fields (summary, themes, tips, vendor advice, risks).
  * It cannot alter budget amounts, totals, dates, or rules engine allocations.
  */
@@ -12,12 +13,12 @@ export const aiEnrichmentSchema = z.object({
     .max(800, 'Summary cannot exceed 800 characters'),
 
   themeIdeas: z
-    .array(z.string().min(3).max(150))
+    .array(z.string().min(3).max(250))
     .min(1, 'At least 1 theme idea required')
     .max(8, 'At most 8 theme ideas allowed'),
 
   personalisedTips: z
-    .array(z.string().min(5).max(300))
+    .array(z.string().min(5).max(500))
     .min(1, 'At least 1 personalised tip required')
     .max(8, 'At most 8 tips allowed'),
 
@@ -25,7 +26,7 @@ export const aiEnrichmentSchema = z.object({
     .array(
       z.object({
         type: z.string().min(2).max(100),
-        advice: z.string().min(5).max(300),
+        advice: z.string().min(5).max(500),
       })
     )
     .min(1, 'At least 1 vendor suggestion required')
@@ -35,7 +36,7 @@ export const aiEnrichmentSchema = z.object({
     .array(
       z.object({
         risk: z.string().min(5).max(200),
-        mitigation: z.string().min(5).max(300),
+        mitigation: z.string().min(5).max(500),
       })
     )
     .min(1, 'At least 1 risk mitigation required')

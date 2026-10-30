@@ -28,15 +28,24 @@ function cleanJsonString(rawText) {
  * Calls OpenRouter chat completions API with timeout and robust error handling.
  */
 async function callOpenRouter(promptText) {
-  const payload = {
-    model: env.openRouterModel,
-    temperature: 0.6,
-    max_tokens: 1500,
-    messages: [
-      { role: 'system', content: SYSTEM_INSTRUCTION },
-      { role: 'user', content: promptText },
-    ],
-  };
+const payload = {
+  model: env.openRouterModel,
+  temperature: 0.6,
+  max_tokens: 3000,
+
+  reasoning: {
+    enabled: false,
+  },
+
+  chat_template_kwargs: {
+    enable_thinking: false,
+  },
+
+  messages: [
+    { role: 'system', content: SYSTEM_INSTRUCTION },
+    { role: 'user', content: promptText },
+  ],
+};
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -59,8 +68,22 @@ async function callOpenRouter(promptText) {
       throw new Error(`OpenRouter HTTP ${res.status}: ${errorText}`);
     }
 
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content || '';
+   const data = await res.json();
+
+  const messageContent = data.choices?.[0]?.message?.content;
+
+console.log('[OpenRouter DEBUG]', {
+  finishReason: data.choices?.[0]?.finish_reason,
+  contentType: typeof messageContent,
+  contentLength: typeof messageContent === 'string'
+    ? messageContent.length
+    : null,
+    reasoningTokens: data.usage?.completion_tokens_details?.reasoning_tokens, totalCompletionTokens: data.usage?.completion_tokens,
+  hasError: Boolean(data.error),
+  error: data.error || null,
+});
+
+return messageContent || '';
   } finally {
     clearTimeout(timer);
   }
