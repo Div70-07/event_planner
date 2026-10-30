@@ -56,10 +56,10 @@ export default function Dashboard({
           )}
 
           <h1 className="dashboard-title">
-            {eventMeta?.eventType
-              ? eventMeta.eventType.charAt(0).toUpperCase() + eventMeta.eventType.slice(1)
-              : 'Event'}{' '}
-            Plan
+            {eventMeta?.eventName ||
+              (eventMeta?.eventType
+                ? `${eventMeta.eventType.charAt(0).toUpperCase() + eventMeta.eventType.slice(1)} Plan`
+                : 'Event Plan')}
           </h1>
 
           {eventMeta && (
