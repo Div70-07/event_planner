@@ -1,18 +1,31 @@
+import { useState, useEffect } from 'react';
+
 /**
  * LoadingOverlay — full-screen festival-themed loading popup.
  * Shows while the event plan is being generated.
- * Icons (ring, diya, disco ball, shehnai) slide left-to-right in a parade.
+ * Displays one spotlight celebration icon at a time that slides in from right,
+ * holds prominently in the center, and exits to the left.
  */
 
 const ICONS = [
   { symbol: '💍', label: 'Wedding ring' },
   { symbol: '🪔', label: 'Diya lamp' },
-  { symbol: '🪩', label: 'Disco ball' },
-  { symbol: '🎊', label: 'Celebration' },
-  { symbol: '🌸', label: 'Flower' },
+  { symbol: '✨', label: 'Celebration sparkle' },
+  { symbol: '🥁', label: 'Festival dhol' },
+  { symbol: '🎉', label: 'Party popper' },
+  { symbol: '🌸', label: 'Garland flower' },
 ];
 
 export default function LoadingOverlay({ eventMeta }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % ICONS.length);
+    }, 1300);
+    return () => clearInterval(timer);
+  }, []);
+
   const eventLabel = {
     wedding: 'Wedding',
     birthday: 'Birthday Party',
@@ -20,6 +33,8 @@ export default function LoadingOverlay({ eventMeta }) {
     college_fest: 'College Fest',
     colony_event: 'Colony Event',
   }[eventMeta?.eventType] || 'Celebration';
+
+  const currentIcon = ICONS[currentIndex];
 
   return (
     <div className="loading-overlay" role="status" aria-live="polite" aria-label="Generating your event plan">
@@ -41,19 +56,12 @@ export default function LoadingOverlay({ eventMeta }) {
           </p>
         )}
 
-        {/* Icon parade */}
-        <div className="loading-parade" aria-hidden="true">
-          <div className="loading-track">
-            {[...ICONS, ...ICONS].map((icon, i) => (
-              <span
-                key={i}
-                className="parade-icon"
-                style={{ animationDelay: `${i * 0.35}s` }}
-                title={icon.label}
-              >
-                {icon.symbol}
-              </span>
-            ))}
+        {/* Single centered spotlight emoji */}
+        <div className="loading-spotlight-container" aria-hidden="true">
+          <div key={currentIndex} className="spotlight-emoji-wrapper">
+            <span className="spotlight-emoji" role="img" aria-label={currentIcon.label}>
+              {currentIcon.symbol}
+            </span>
           </div>
         </div>
 

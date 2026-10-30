@@ -109,6 +109,55 @@ const MILESTONE_TASKS = {
       'Send appreciation notes to sponsors, performers, and volunteers',
     ],
   },
+  college_fest: {
+    8: [
+      'Form core student organizing committee and faculty liaison team',
+      'Finalize festival theme, event schedule, and competition rules',
+      'Obtain campus administration, ground, and security approvals',
+    ],
+    4: [
+      'Pitch to corporate sponsors and secure brand partnerships',
+      'Book headline artist, guest bands, DJ, and stage sound & lights crew',
+      'Open online inter-college registrations and launch publicity campaign',
+    ],
+    2: [
+      'Finalize technical stage riders, sound console, and generator backup',
+      'Order fest merchandise, volunteer t-shirts, badges, and wristbands',
+      'Confirm emergency first-aid station and crowd control barricading',
+    ],
+    1: [
+      'Release master run of show, stage slots, and artist lineup schedule',
+      'Conduct all-volunteer briefing and campus security walkthrough',
+      'Test stage lighting, sound microphones, and registration desks',
+    ],
+    0: [
+      'Manage gate security, ticket/pass verification, and crowd movement',
+      'Coordinate artist green rooms, stage timing, and sound crew',
+      'Host grand finale, felicitate winners, and conclude the fest!',
+    ],
+  },
+  colony_event: {
+    4: [
+      'Host resident association meeting to agree on celebration scope',
+      'Reserve society community hall / central park and apply for sound permit',
+      'Collect resident contributions and finalize celebration theme',
+    ],
+    2: [
+      'Book local sound system, projector screen, and festive fairy light decor',
+      'Finalize resident cultural performances, kids games, and family quiz',
+      'Confirm event supplies, seating arrangements, and welcome tent',
+    ],
+    1: [
+      'Send WhatsApp broadcast reminder to all resident families with schedule',
+      'Procure game prizes, mementos for seniors, and return gifts for children',
+      'Coordinate setup of chairs, stage backdrop, and electrical power points',
+    ],
+    0: [
+      'Set up welcome desk, sound equipment, and competition stages',
+      'Kick off cultural performances, games, and society celebrations',
+      'Present awards and wrap up with community photograph!',
+    ],
+  },
 };
 
 /**
@@ -152,6 +201,7 @@ export function generateTimeline({
   eventType = 'wedding',
   eventDate,
   currentDate,
+  priorities = [],
   functionAddons = [],
 }) {
   const daysRemaining = getDaysRemaining(eventDate, currentDate);
@@ -166,7 +216,17 @@ export function generateTimeline({
   for (const milestone of milestonesConfig) {
     const daysOffset = Math.round(milestone.weeksBefore * 7);
     const dueDate = offsetDateString(eventDate, -daysOffset);
-    const tasks = [...(taskMap[milestone.weeksBefore] || [])];
+    let tasks = [...(taskMap[milestone.weeksBefore] || [])];
+
+    // Filter out catering/food tasks if food is not chosen
+    if (priorities.length > 0 && !priorities.includes('food')) {
+      tasks = tasks.filter((t) => !/cater|catering|tasting|menu/i.test(t));
+    }
+
+    // Filter out wedding-specific tasks if event is not a wedding
+    if (eventType !== 'wedding') {
+      tasks = tasks.filter((t) => !/mehndi|haldi|sangeet|bridal|groom|couple/i.test(t));
+    }
 
     // If milestone is already in the past
     if (dueDate < currentDate && milestone.weeksBefore > 0) {

@@ -80,12 +80,39 @@ export function calculateBudgetAllocation({
     }
   }
 
+  // 2b. If user selected priorities and did NOT include food:
+  // Zero out catering and reallocate its entire percentage to the user's selected priorities
+  if (priorities.length > 0 && !priorities.includes('food')) {
+    const cateringShare = currentPercentages.catering || 0;
+    if (cateringShare > 0) {
+      currentPercentages.catering = 0;
+      const targetCategories = categories.filter(
+        (cat) => cat !== 'catering' && prioritizedCategoryKeys.has(cat)
+      );
+      const recipientCategories = targetCategories.length > 0
+        ? targetCategories
+        : categories.filter((cat) => cat !== 'catering' && cat !== 'contingency');
+
+      if (recipientCategories.length > 0) {
+        const extraPerRecipient = Math.floor(cateringShare / recipientCategories.length);
+        let distributed = 0;
+        for (let i = 0; i < recipientCategories.length; i++) {
+          const cat = recipientCategories[i];
+          const add = i === recipientCategories.length - 1 ? (cateringShare - distributed) : extraPerRecipient;
+          currentPercentages[cat] += add;
+          distributed += add;
+        }
+      }
+    }
+  }
+
   // 3. Outdoor venue weather allowance adjustment
   if (venuePreference === 'outdoor') {
     const weatherAllowance = ALLOCATION_RULES.OUTDOOR_WEATHER_ALLOWANCE_PERCENT;
     // Boost contingency or decor for weatherproofing/tenting
-    if (currentPercentages.catering - weatherAllowance >= ALLOCATION_RULES.MIN_CATEGORY_FLOOR) {
-      currentPercentages.catering -= weatherAllowance;
+    const donorKey = currentPercentages.catering > weatherAllowance ? 'catering' : 'venue';
+    if (currentPercentages[donorKey] && currentPercentages[donorKey] - weatherAllowance >= ALLOCATION_RULES.MIN_CATEGORY_FLOOR) {
+      currentPercentages[donorKey] -= weatherAllowance;
       currentPercentages.contingency += weatherAllowance;
     }
   }
@@ -162,8 +189,9 @@ export function calculateBudgetAllocation({
 
   const percentDiff = Math.round((100 - totalPercent) * 10) / 10;
   if (percentDiff !== 0) {
-    // Adjust contingency or largest category
-    const adjustKey = roundedPercentages.catering ? 'catering' : allKeys[0];
+    // Adjust contingency or largest active category
+    const activeKeys = allKeys.filter((k) => roundedPercentages[k] > 0);
+    const adjustKey = roundedPercentages.catering ? 'catering' : (activeKeys[0] || allKeys[0]);
     roundedPercentages[adjustKey] = Math.round((roundedPercentages[adjustKey] + percentDiff) * 10) / 10;
   }
 
@@ -177,9 +205,10 @@ export function calculateBudgetAllocation({
     allocatedSum += amt;
   }
 
-  // Remainder adjustment (catering or contingency absorbs rounding difference)
+  // Remainder adjustment (catering or first active category absorbs rounding difference)
   const remainder = budget - allocatedSum;
-  const balanceCategory = amounts.catering ? 'catering' : allKeys[0];
+  const activeKeysWithAmount = allKeys.filter((k) => amounts[k] > 0);
+  const balanceCategory = amounts.catering ? 'catering' : (activeKeysWithAmount[0] || allKeys[0]);
   amounts[balanceCategory] += remainder;
 
   // 8. Generate helpful contextual rationale for each category
@@ -222,5 +251,6 @@ export function calculateBudgetAllocation({
     };
   });
 
-  return result;
+  // 9. Filter out categories that have zero allocation (e.g. food not selected by user)
+  return result.filter((item) => item.percent > 0 && item.amount > 0);
 }

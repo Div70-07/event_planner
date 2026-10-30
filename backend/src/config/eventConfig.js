@@ -53,12 +53,12 @@ export const STARTING_BUDGET_PERCENTAGES = {
     contingency: 10,
   },
   college_fest: {
-    venue: 18,
-    catering: 30,
-    decor: 10,
-    entertainment: 20,
-    photography: 7,
-    attire: 5,
+    venue: 25,
+    catering: 0,
+    decor: 15,
+    entertainment: 30,
+    photography: 10,
+    attire: 10,
     contingency: 10,
   },
   colony_event: {

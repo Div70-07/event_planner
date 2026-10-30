@@ -54,6 +54,7 @@ export function generateRulesPlan(input, currentDate = getTodayDateString()) {
     eventType,
     eventDate,
     currentDate,
+    priorities,
     functionAddons,
   });
 

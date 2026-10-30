@@ -21,7 +21,7 @@ export function generateVendors({
   const percentMap = {};
   for (const item of budgetAllocations) {
     allocationMap[item.key] = item.amount;
-    percentMap[item.key] = item.percent;
+    percentMap[item.key] = item.percent !== undefined ? item.percent : (item.amount > 0 ? (item.amount > 100 ? 15 : item.amount) : 0);
   }
 
   const vendors = [];
@@ -139,5 +139,6 @@ export function generateVendors({
     checklist: attireChecks,
   });
 
-  return vendors;
+  // Only return vendors that have a positive budget allocation in the plan
+  return vendors.filter((v) => v.budgetShare > 0);
 }
