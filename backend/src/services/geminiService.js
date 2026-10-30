@@ -68,22 +68,9 @@ const payload = {
       throw new Error(`OpenRouter HTTP ${res.status}: ${errorText}`);
     }
 
-   const data = await res.json();
-
-  const messageContent = data.choices?.[0]?.message?.content;
-
-console.log('[OpenRouter DEBUG]', {
-  finishReason: data.choices?.[0]?.finish_reason,
-  contentType: typeof messageContent,
-  contentLength: typeof messageContent === 'string'
-    ? messageContent.length
-    : null,
-    reasoningTokens: data.usage?.completion_tokens_details?.reasoning_tokens, totalCompletionTokens: data.usage?.completion_tokens,
-  hasError: Boolean(data.error),
-  error: data.error || null,
-});
-
-return messageContent || '';
+    const data = await res.json();
+    const messageContent = data.choices?.[0]?.message?.content;
+    return messageContent || '';
   } finally {
     clearTimeout(timer);
   }

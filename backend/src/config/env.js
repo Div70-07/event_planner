@@ -1,8 +1,5 @@
 import 'dotenv/config';
 
-const apiKey = process.env.OPENROUTER_API_KEY;
-const model = process.env.OPENROUTER_MODEL;
-const baseUrl = process.env.OPENROUTER_BASE_URL;
 /**
  * Validates and exports environment configuration.
  * Fails fast with clear error messages if required variables are missing in production.
@@ -50,9 +47,3 @@ function loadEnv() {
 
 export const env = loadEnv();
 export { loadEnv };
-
-console.log('[ENV CHECK]', {
-  openRouterKeyLoaded: Boolean(env.openRouterApiKey),
-  openRouterModel: env.openRouterModel,
-  openRouterBaseUrl: env.openRouterBaseUrl,
-});

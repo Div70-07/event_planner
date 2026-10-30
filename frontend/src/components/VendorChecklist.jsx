@@ -33,7 +33,7 @@ function formatINR(amount) {
   }).format(amount);
 }
 
-export default function VendorChecklist({ vendors, totalBudget, eventMeta }) {
+export default function VendorChecklist({ vendors, totalBudget, _eventMeta }) {
   const [checked, setChecked] = useState(loadChecked);
 
   useEffect(() => {
