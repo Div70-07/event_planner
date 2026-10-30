@@ -315,9 +315,11 @@ export default function EventForm({
               onChange={handleChange}
               onBlur={() => handleBlur('eventType')}
             >
-              <option value="wedding">Wedding Celebration</option>
+              <option value="wedding">Wedding</option>
               <option value="birthday">Birthday Party</option>
               <option value="community">Community / Festive Gathering</option>
+              <option value="college_fest">College Fest</option>
+              <option value="colony_event">Colony / Neighbourhood Event</option>
             </select>
           </div>
 

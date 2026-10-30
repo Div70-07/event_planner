@@ -18,8 +18,10 @@ export function generateVendors({
   guestCount = 100,
 }) {
   const allocationMap = {};
+  const percentMap = {};
   for (const item of budgetAllocations) {
     allocationMap[item.key] = item.amount;
+    percentMap[item.key] = item.percent;
   }
 
   const vendors = [];
@@ -39,7 +41,7 @@ export function generateVendors({
 
   vendors.push({
     type: 'Venue & Banquet Hall',
-    budgetShare: allocationMap.venue || 0,
+    budgetShare: percentMap.venue || 0,
     checklist: venueChecks,
   });
 
@@ -69,7 +71,7 @@ export function generateVendors({
 
   vendors.push({
     type: 'Catering & Hospitality',
-    budgetShare: allocationMap.catering || 0,
+    budgetShare: percentMap.catering || 0,
     checklist: cateringChecks,
   });
 
@@ -88,7 +90,7 @@ export function generateVendors({
 
   vendors.push({
     type: 'Decorator & Floral Stylist',
-    budgetShare: allocationMap.decor || 0,
+    budgetShare: percentMap.decor || 0,
     checklist: decorChecks,
   });
 
@@ -104,7 +106,7 @@ export function generateVendors({
 
   vendors.push({
     type: 'Photographer & Videographer',
-    budgetShare: allocationMap.photography || 0,
+    budgetShare: percentMap.photography || 0,
     checklist: photoChecks,
   });
 
@@ -120,7 +122,7 @@ export function generateVendors({
 
   vendors.push({
     type: 'DJ, Sound & Entertainment',
-    budgetShare: allocationMap.entertainment || 0,
+    budgetShare: percentMap.entertainment || 0,
     checklist: entertainmentChecks,
   });
 
@@ -133,7 +135,7 @@ export function generateVendors({
 
   vendors.push({
     type: 'Invitations, Styling & Favors',
-    budgetShare: allocationMap.attire || 0,
+    budgetShare: percentMap.attire || 0,
     checklist: attireChecks,
   });
 

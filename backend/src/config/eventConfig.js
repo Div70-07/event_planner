@@ -3,7 +3,7 @@
  * Source of truth for rules engine allocations, city tiers, thresholds, and timelines.
  */
 
-export const EVENT_TYPES = ['wedding', 'birthday', 'community'];
+export const EVENT_TYPES = ['wedding', 'birthday', 'community', 'college_fest', 'colony_event'];
 
 export const PRIORITIES = [
   'food',
@@ -50,6 +50,24 @@ export const STARTING_BUDGET_PERCENTAGES = {
     entertainment: 12,
     photography: 5,
     attire: 8,
+    contingency: 10,
+  },
+  college_fest: {
+    venue: 18,
+    catering: 30,
+    decor: 10,
+    entertainment: 20,
+    photography: 7,
+    attire: 5,
+    contingency: 10,
+  },
+  colony_event: {
+    venue: 15,
+    catering: 35,
+    decor: 10,
+    entertainment: 15,
+    photography: 5,
+    attire: 10,
     contingency: 10,
   },
 };
@@ -192,6 +210,16 @@ export const CITY_TIER_THRESHOLDS = {
     tier2: 500,
     tier3: 300,
   },
+  college_fest: {
+    metro: 500,
+    tier2: 350,
+    tier3: 200,
+  },
+  colony_event: {
+    metro: 600,
+    tier2: 400,
+    tier3: 250,
+  },
 };
 
 /**
@@ -230,5 +258,18 @@ export const TIMELINE_MILESTONES = {
     { label: '1 Week Before', weeksBefore: 1 },
     { label: 'Event Day', weeksBefore: 0 },
     { label: 'Post-Event', weeksBefore: -0.5 },
+  ],
+  college_fest: [
+    { label: '2 Months Before', weeksBefore: 8 },
+    { label: '1 Month Before', weeksBefore: 4 },
+    { label: '2 Weeks Before', weeksBefore: 2 },
+    { label: '1 Week Before', weeksBefore: 1 },
+    { label: 'Event Day', weeksBefore: 0 },
+  ],
+  colony_event: [
+    { label: '1 Month Before', weeksBefore: 4 },
+    { label: '2 Weeks Before', weeksBefore: 2 },
+    { label: '1 Week Before', weeksBefore: 1 },
+    { label: 'Event Day', weeksBefore: 0 },
   ],
 };

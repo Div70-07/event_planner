@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Presets from './components/Presets.jsx';
 import EventForm from './components/EventForm.jsx';
 import Dashboard from './components/Dashboard.jsx';
+import LoadingOverlay from './components/LoadingOverlay.jsx';
 import { generatePlanApi } from './api/planClient.js';
 import { SAMPLE_PLAN, SAMPLE_EVENT_META } from './data/samplePlan.js';
 
@@ -13,6 +14,7 @@ function App() {
   const [planResult, setPlanResult] = useState(null);
   const [eventMeta, setEventMeta] = useState(null);
   const [activeRefineLabel, setActiveRefineLabel] = useState('');
+  const [pendingMeta, setPendingMeta] = useState(null);
 
   const handleSelectPreset = (preset) => {
     setSelectedPresetId(preset.id);
@@ -30,6 +32,7 @@ function App() {
   };
 
   const handleFormSubmit = async (formData) => {
+    setPendingMeta(formData);
     setIsLoading(true);
     setApiError('');
 
@@ -91,6 +94,8 @@ function App() {
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
+
+      {isLoading && <LoadingOverlay eventMeta={pendingMeta} />}
 
       <div className="app-container">
         {/* ── Site Header ──────────────────────────────────────────── */}

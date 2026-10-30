@@ -52,13 +52,10 @@ describe('VendorChecklist', () => {
     expect(stored['Venue::Check capacity']).toBe(true);
   });
 
-  it('renders whatsapp inquiry links for each vendor', () => {
+  it('does not render whatsapp inquiry links (removed feature)', () => {
     render(<VendorChecklist vendors={MOCK_VENDORS} totalBudget={1000000} />);
-    const waLinks = screen.getAllByRole('link', { name: /enquire.*whatsapp/i });
-    expect(waLinks.length).toBe(2);
-    waLinks.forEach((link) => {
-      expect(link.href).toContain('wa.me');
-    });
+    const waLinks = screen.queryAllByRole('link', { name: /enquire.*whatsapp/i });
+    expect(waLinks.length).toBe(0);
   });
 
   it('renders the section heading', () => {
