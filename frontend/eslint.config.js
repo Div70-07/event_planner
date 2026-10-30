@@ -27,6 +27,7 @@ export default [
         AbortController: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
+        Intl: 'readonly',
       },
     },
     settings: {

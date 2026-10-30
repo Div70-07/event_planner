@@ -162,15 +162,15 @@ event-planner/
 ## SESSION 8 — Frontend: Dashboard (Budget, Timeline, Vendors)
 **What gets built:** The plan dashboard — budget table, timeline milestones, vendor checklist, warnings, progress bar.
 
-- [ ] **BudgetTable** (category, %, amount, rationale; totals row)
-- [ ] **Timeline** (milestones with dates and tasks)
-- [ ] **VendorChecklist** (tick items, checklist state saved in `localStorage`)
-- [ ] **Warnings** panel
-- [ ] **ProgressBar** (% of tasks/vendors completed)
-- [ ] **AI insights** panel (summary, theme ideas, tips, risks) with a clear "AI-generated" label
-- [ ] Notice banner when `aiEnhanced: false`
-- [ ] Sticky section navigation for one scrolling dashboard; no tab interface
-- [ ] Sample-plan demo mode loads a prebuilt plan without calling the API
+- [x] **BudgetTable** (category, %, amount, rationale; totals row)
+- [x] **Timeline** (milestones with dates and tasks)
+- [x] **VendorChecklist** (tick items, checklist state saved in `localStorage`)
+- [x] **Warnings** panel
+- [x] **ProgressBar** (% of tasks/vendors completed)
+- [x] **AI insights** panel (summary, theme ideas, tips, risks) with a clear "AI-generated" label
+- [x] Notice banner when `aiEnhanced: false`
+- [x] Sticky section navigation for one scrolling dashboard; no tab interface
+- [x] Sample-plan demo mode loads a prebuilt plan without calling the API
 
 > ✅ **YOU TEST:** Generate a plan → all sections appear on one scrolling page. Tick vendor/task checkboxes → progress bar updates → refresh → ticks are still there. Click "Try a sample" → sample plan loads instantly with no network call. Sticky nav links scroll to sections correctly.
 
