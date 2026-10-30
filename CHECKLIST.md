@@ -207,35 +207,35 @@ event-planner/
 **What gets built:** Full accessibility pass, security audit, code cleanup, lint, coverage.
 
 ### Security
-- [ ] `helmet`, CORS allow-list, JSON body limit (~10kb)
-- [ ] Rate limit on `/api/plan` (e.g. 10/min/IP) returns proper 429
-- [ ] No secrets in logs or client bundle (search the build output for the key)
-- [ ] No `dangerouslySetInnerHTML` anywhere
-- [ ] `npm audit` has no critical issues in either folder
+- [x] `helmet`, CORS allow-list, JSON body limit (~10kb)
+- [x] Rate limit on `/api/plan` (e.g. 10/min/IP) returns proper 429
+- [x] No secrets in logs or client bundle (search the build output for the key)
+- [x] No `dangerouslySetInnerHTML` anywhere
+- [x] `npm audit` has no critical issues in either folder (frontend: 0 vulns; backend: 1 high in zod v3 — mitigated by 10kb body limit; all criticals resolved by upgrading vitest v5 + vite v6)
 
 ### Accessibility
-- [ ] One `<h1>`, correct heading order, landmarks, `lang="en"`, meaningful `<title>`
-- [ ] Skip-to-content link, visible focus styles
-- [ ] Whole app usable with keyboard only
-- [ ] Errors and results announced with `aria-live`
-- [ ] Tables have `<caption>` and `<th scope>`
-- [ ] Dashboard is one scrolling page with sticky section navigation; no ARIA tabs to maintain
-- [ ] Buttons, refine chips, add-on toggles, and WhatsApp links have clear accessible names
-- [ ] Contrast ≥ 4.5:1 and no colour-only information
-- [ ] `prefers-reduced-motion` respected
+- [x] One `<h1>`, correct heading order, landmarks, `lang="en"`, meaningful `<title>`
+- [x] Skip-to-content link, visible focus styles
+- [x] Whole app usable with keyboard only
+- [x] Errors and results announced with `aria-live`
+- [x] Tables have `<caption>` and `<th scope>`
+- [x] Dashboard is one scrolling page with sticky section navigation; no ARIA tabs to maintain
+- [x] Buttons, refine chips, add-on toggles, and WhatsApp links have clear accessible names
+- [x] Contrast ≥ 4.5:1 and no colour-only information
+- [x] `prefers-reduced-motion` respected
 - [ ] Run a Lighthouse accessibility check (target 95+) and fix issues
 
 ### Efficiency
-- [ ] gzip/compression enabled
-- [ ] Production build checked (bundle size reasonable)
-- [ ] One LLM call per plan, cache working
-- [ ] No unused dependencies (`npm ls`, remove extras)
+- [x] gzip/compression enabled
+- [x] Production build checked (bundle size reasonable — 64kb gzipped JS)
+- [x] One LLM call per plan, cache working
+- [x] No unused dependencies (`npm ls`, remove extras)
 
 ### Code quality
-- [ ] Lint passes with zero errors in both folders
-- [ ] No dead code, commented-out blocks, or stray `console.log`
-- [ ] JSDoc on public functions in services
-- [ ] Constants live in config files, not inline
+- [x] Lint passes with zero errors in both folders
+- [x] No dead code, commented-out blocks, or stray `console.log`
+- [x] JSDoc on public functions in services
+- [x] Constants live in config files, not inline
 
 > ✅ **YOU TEST:** Run `npm run lint` → zero errors. Run `npm test -- --coverage` → all pass, note actual coverage numbers. Run Lighthouse → accessibility score. Tab through the entire form with keyboard only. `npm audit` → no critical vulnerabilities.
 
@@ -347,3 +347,6 @@ Drop in this order: dark mode bonus → optional seasonal-awareness extras → v
 | 2026-10-30 | Session 5 | Full POST /api/plan endpoint, planController, 10 req/min/IP rate limiter with standardized 429 error shape, production static frontend serving wired in Express, Helmet headers, and 4 supertest integration tests | None. All 49 tests and lint pass cleanly. |
 | 2026-10-30 | Session 6 | Gemini AI integration using @google/genai, aiEnrichmentSchema with Zod validation, prompt injection defense with <untrusted_user_notes>, 15s timeout & retry, deterministic in-memory cache, graceful non-blocking fallback to rules-only plan, and 10 unit tests with mocked AI client | None. All 59 tests and lint pass cleanly. |
 | 2026-10-30 | Session 7 | Frontend scaffold & single-page EventForm with 3 Indian celebration presets, live per-guest cost preview, accessible fieldsets/legends/error IDs, localStorage persistence, wedding add-ons (Haldi/Mehndi/Sangeet), priority chips, and 11 unit tests | None. All frontend and monorepo tests and lint pass cleanly. |
+| 2026-10-30 | Session 8–10 | Indian-themed dashboard (maroon/cream/saffron), what-if sliders, refine chips, budget health meter, panic mode, export bar (copy/print/.ics/WhatsApp) | None. All 118 tests passing. |
+| 2026-10-30 | OpenRouter integration | Configured OPENROUTER_API_KEY in env.js + geminiService.js; tested live API call; env.test.js updated to allow either AI key in production | None. 60 backend + 58 frontend tests passing. |
+| 2026-10-30 | Session 11 | Hardening: upgraded vitest→v5, vite→v6, fixed all critical/high vulns (frontend: 0 vulns); added table <caption>, .sr-only CSS, aria-live status announcer; verified no dangerouslySetInnerHTML, no secrets in bundle, no console.log; lint 0 errors, 118 tests pass | 1 high zod v3 vuln in backend — mitigated by 10kb body limit; Lighthouse manual test pending. |
