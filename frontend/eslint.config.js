@@ -24,6 +24,9 @@ export default [
         fetch: 'readonly',
         URL: 'readonly',
         Blob: 'readonly',
+        AbortController: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
       },
     },
     settings: {

@@ -147,13 +147,13 @@ event-planner/
 ## SESSION 7 — Frontend: Scaffold + Event Form
 **What gets built:** Vite + React app, API wrapper, the complete EventForm with presets and add-ons.
 
-- [ ] Vite + React app scaffolded in `frontend/`
-- [ ] API wrapper with loading / error handling
-- [ ] Preset buttons at the top of the form: **Wedding**, **Kids' birthday**, **Diwali meet**
-- [ ] **Single-page EventForm** with grouped semantic `<fieldset>` sections, inline validation, accessible labels/errors, and presets at the top
-- [ ] Function add-on toggles for **Haldi**, **Mehndi**, and **Sangeet** (visible only for weddings)
-- [ ] Form state saved to `localStorage` (wrapped in try/catch)
-- [ ] Responsive layout down to 320px
+- [x] Vite + React app scaffolded in `frontend/`
+- [x] API wrapper with loading / error handling
+- [x] Preset buttons at the top of the form: **Wedding**, **Kids' birthday**, **Diwali meet**
+- [x] **Single-page EventForm** with grouped semantic `<fieldset>` sections, inline validation, accessible labels/errors, and presets at the top
+- [x] Function add-on toggles for **Haldi**, **Mehndi**, and **Sangeet** (visible only for weddings)
+- [x] Form state saved to `localStorage` (wrapped in try/catch)
+- [x] Responsive layout down to 320px
 
 > ✅ **YOU TEST:** Open the app in browser. Click each preset → form populates correctly. Fill the form and submit → spinner shows → plan JSON arrives. Resize to 320px — form is usable. Refresh page — form values are restored from localStorage.
 
@@ -346,3 +346,4 @@ Drop in this order: dark mode bonus → optional seasonal-awareness extras → v
 | 2026-10-30 | Session 4 | Rules engine timeline generator (drops past milestones, carries forward critical tasks, wedding add-on milestones), Panic Mode engine (< 14 days into bookToday/doThisWeek/canSkip), vendor checklist engine with dietary (Jain/vegan/halal/veg) & venue customizations, deterministic warning engine, and master orchestrator | None. All 45 tests and lint pass cleanly. |
 | 2026-10-30 | Session 5 | Full POST /api/plan endpoint, planController, 10 req/min/IP rate limiter with standardized 429 error shape, production static frontend serving wired in Express, Helmet headers, and 4 supertest integration tests | None. All 49 tests and lint pass cleanly. |
 | 2026-10-30 | Session 6 | Gemini AI integration using @google/genai, aiEnrichmentSchema with Zod validation, prompt injection defense with <untrusted_user_notes>, 15s timeout & retry, deterministic in-memory cache, graceful non-blocking fallback to rules-only plan, and 10 unit tests with mocked AI client | None. All 59 tests and lint pass cleanly. |
+| 2026-10-30 | Session 7 | Frontend scaffold & single-page EventForm with 3 Indian celebration presets, live per-guest cost preview, accessible fieldsets/legends/error IDs, localStorage persistence, wedding add-ons (Haldi/Mehndi/Sangeet), priority chips, and 11 unit tests | None. All frontend and monorepo tests and lint pass cleanly. |
