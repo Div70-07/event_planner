@@ -61,7 +61,8 @@ export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth, guest
 
       {/* Budget Table */}
       <div className="budget-table-wrap">
-        <table className="budget-table" aria-label="Budget allocation breakdown">
+        <table className="budget-table">
+          <caption className="sr-only">Budget allocation by category, percentage and amount</caption>
           <thead>
             <tr>
               <th scope="col">Category</th>

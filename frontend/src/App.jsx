@@ -142,6 +142,12 @@ function App() {
             isLoading={isLoading}
             apiError={apiError}
           />
+
+          {/* Accessible status announcer for loading/error states */}
+          <div aria-live="polite" aria-atomic="true" className="sr-only" role="status">
+            {isLoading ? 'Generating your event plan, please wait…' : ''}
+            {apiError && !isLoading ? `Error: ${apiError}` : ''}
+          </div>
         </main>
 
         <footer className="site-footer" role="contentinfo">
