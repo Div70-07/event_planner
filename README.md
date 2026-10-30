@@ -6,7 +6,6 @@
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-brightgreen?style=flat-square)](https://event-planner-9yrt.onrender.com)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/Div70-07/event_planner)
 [![Branch](https://img.shields.io/badge/Branch-main-orange?style=flat-square)](https://github.com/Div70-07/event_planner/tree/main)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 ---
 
@@ -108,7 +107,7 @@
 ### AI Integration
 - **Gateway:** OpenRouter API (`https://openrouter.ai/api/v1`)
 - **Primary Model:** `nvidia/nemotron-3.5-lightning:free`
-- **Fallback Integration:** Direct Google Gemini SDK (`@google/genai`) supported if `GEMINI_API_KEY` is supplied
+- **Fallback Integration:** Direct Google Gemini SDK (`@google/genai`) supported as a secondary fallback if `GEMINI_API_KEY` is configured in the environment
 - **Design Pattern:** Hybrid rules-first architecture with non-blocking fallback
 
 ### Testing & Code Quality
@@ -158,7 +157,7 @@ flowchart TD
 1. **Rules Engine as Source of Truth:**
    All quantitative decisions (budgets, per-guest spends, milestone dates, vendor task lists, trade-off mathematics, and panic mode classifications) are computed entirely by deterministic JavaScript modules in `backend/src/services/rulesEngine/`.
 2. **Context Enrichment via AI:**
-   OpenRouter is called only after the rules plan is computed. It is provided a structured system prompt instructing the model to enrich qualitative fields only: executive summary, cultural theme ideas, personalised logistical tips, vendor negotiation advice, and risk mitigation strategies.
+   OpenRouter is called only after the rules plan is computed. If an identical normalized request hash already exists in the in-memory cache and has not exceeded its 10-minute time-to-live (`ttlMs = 10 * 60 * 1000`), the cached enrichment is returned immediately without calling the AI API. Otherwise, the service issues an AI request instructing the model to enrich qualitative fields only: executive summary, cultural theme ideas, personalised logistical tips, vendor negotiation advice, and risk mitigation strategies.
 3. **Prompt Injection Defense:**
    User notes are enclosed within strict `<untrusted_user_notes>` XML delimiters and sanitized. The system prompt instructs the model to ignore any system commands embedded in user notes.
 
@@ -272,11 +271,11 @@ event-planner/
    ```
 
 2. **Configure Environment Variables:**
-   Create a local `.env` file in the project root based on `.env.example`:
+   The backend loads configuration from `backend/.env` using `dotenv`. Create the `.env` file inside the `backend/` directory (or copy from the root `.env.example`):
    ```bash
-   cp .env.example .env
+   cp .env.example backend/.env
    ```
-   Open `.env` in your text editor and supply your OpenRouter API key:
+   Open `backend/.env` in your text editor and supply your OpenRouter API key:
    ```env
    OPENROUTER_API_KEY=your_actual_openrouter_api_key
    OPENROUTER_MODEL=nvidia/nemotron-3.5-lightning:free
@@ -285,7 +284,7 @@ event-planner/
    NODE_ENV=development
    CORS_ORIGIN=http://localhost:5173
    ```
-   *(Never commit `.env` to Git. The file is listed in `.gitignore`.)*
+   *(Never commit `backend/.env` to Git. The `.env` pattern is listed in `.gitignore`.)*
 
 3. **Install Dependencies:**
    Install dependencies across the monorepo root, backend, and frontend:
@@ -381,7 +380,9 @@ Generates a deterministic rules-based celebration plan enriched with optional Op
 }
 ```
 
-#### Example Response (200 OK — Enriched)
+#### Example Response (200 OK — Illustrative Enriched Output)
+
+> *Note: The following response is an illustrative example showing the JSON contract shape.*
 
 ```json
 {
@@ -519,9 +520,11 @@ Generates a deterministic rules-based celebration plan enriched with optional Op
 
 - **Provider:** OpenRouter (`https://openrouter.ai/api/v1/chat/completions`)
 - **Configured Model:** `nvidia/nemotron-3.5-lightning:free`
+- **Fallback Capability:** Direct Google Gemini SDK (`@google/genai`) is implemented in `geminiService.js` and functions as a secondary provider if `GEMINI_API_KEY` is present and `OPENROUTER_API_KEY` is omitted.
+- **In-Memory Caching:** Normalizes incoming inputs (sorted arrays, trimmed strings) and hashes them with `SHA-256`. Identical plans requested within the 10-minute cache window (`ttlMs = 600,000 ms`) are served from memory to avoid redundant AI invocations.
 - **Role of AI:** Qualitative enrichment only. The model drafts executive summaries, festival theme ideas, practical local tips, and risk mitigation strategies.
 - **Rules Engine Boundaries:** The LLM is strictly prohibited from modifying rupee amounts, totals, percentages, due dates, or rules engine decisions.
-- **Provider Constraints:** The model is hosted on OpenRouter's free pool. Free endpoints are subject to upstream concurrency limits and temporary rate limiting (HTTP 429). The system handles this gracefully by returning the complete rules-based plan when the provider is busy.
+- **Provider Constraints:** The model is hosted on OpenRouter's free pool. Free endpoints are subject to upstream concurrency limits and temporary rate limiting (HTTP 429). The system handles this gracefully by returning the complete rules-based plan when the provider is busy or unreachable.
 
 ---
 
@@ -560,8 +563,12 @@ npm run test:coverage --prefix frontend
 # Lint both workspaces (ESLint)
 npm run lint
 
-# Auto-fix linting issues
+# Auto-fix linting issues across workspaces
 npm run lint:fix
+
+# Or run per workspace
+npm run lint:fix --prefix backend
+npm run lint:fix --prefix frontend
 ```
 
 ### Production Build Verification
@@ -607,7 +614,7 @@ The application is deployed on Render as a single **Web Service**.
 2. When the backend starts via `node backend/src/index.js`, `NODE_ENV=production` triggers the static handler in `backend/src/app.js`:
    ```javascript
    if (env.isProduction) {
-     const distPath = path.resolve(__dirname, '../../../frontend/dist');
+     const distPath = path.resolve(__dirname, '../../frontend/dist');
      app.use(express.static(distPath));
      app.get('*', (req, res, next) => {
        if (req.path.startsWith('/api')) return next();
@@ -642,4 +649,3 @@ The application is deployed on Render as a single **Web Service**.
 - **Developer:** [Divyanshu](https://github.com/Div70-07)
 - **Challenge:** PromptWars Challenge 05
 - **Built With:** Node.js, Express, React, Vite, OpenRouter AI, and Zod.
-- **License:** MIT License
