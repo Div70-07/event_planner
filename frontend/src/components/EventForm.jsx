@@ -617,7 +617,7 @@ export default function EventForm({
               Generating Your Intelligent Plan...
             </span>
           ) : (
-            '✨ Generate Event Plan'
+            'Generate Event Plan'
           )}
         </button>
 

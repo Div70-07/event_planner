@@ -60,7 +60,6 @@ export default function VendorChecklist({ vendors, totalBudget }) {
   return (
     <section className="dashboard-section" aria-labelledby="vendor-heading">
       <div className="section-header">
-        <span className="section-icon" aria-hidden="true">🤝</span>
         <h2 id="vendor-heading" className="section-title">Vendor Checklist</h2>
       </div>
 

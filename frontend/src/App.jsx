@@ -81,7 +81,13 @@ function App() {
         <header className="site-header mehndi-bg" role="banner">
           <div className="mehndi-overlay" aria-hidden="true" />
           <div className="site-header-inner">
-            <div className="lotus-icon" aria-hidden="true">🪷</div>
+            <div className="header-crest" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 2C12 2 15 7 15 11C15 13 13.5 15 12 15C10.5 15 9 13 9 11C9 7 12 2 12 2Z" fill="var(--color-turmeric)" fillOpacity="0.4" stroke="var(--color-turmeric)"/>
+                <path d="M12 15C12 15 6 13 4 8C3.5 12 6 17 10 18C11 18.25 12 18 12 18C12 18 13 18.25 14 18C18 17 20.5 12 20 8C18 13 12 15 12 15Z" stroke="var(--color-gold)"/>
+                <circle cx="12" cy="20" r="1.5" fill="var(--color-turmeric)"/>
+              </svg>
+            </div>
             <h1 className="site-title">Celebration & Event Planner</h1>
             <p className="site-tagline">
               Intelligent, culturally astute event planning for weddings, birthdays &amp;
@@ -94,11 +100,13 @@ function App() {
               onClick={handleLoadSample}
               aria-label="Load a pre-built sample plan to explore the dashboard"
             >
-              ✨ Try a Sample Plan
+              Try a Sample Plan
             </button>
           </div>
           <div className="lotus-divider" aria-hidden="true">
-            <span>❀</span><span>✿</span><span>❀</span>
+            <span className="ornament-line"></span>
+            <span className="ornament-dot">✦</span>
+            <span className="ornament-line"></span>
           </div>
         </header>
 
@@ -122,9 +130,11 @@ function App() {
 
         <footer className="site-footer" role="contentinfo">
           <div className="lotus-divider" aria-hidden="true">
-            <span>❀</span><span>✿</span><span>❀</span>
+            <span className="ornament-line"></span>
+            <span className="ornament-dot">✦</span>
+            <span className="ornament-line"></span>
           </div>
-          <p>Made with ❤️ for Indian celebrations &nbsp;·&nbsp; PromptWars Challenge 05</p>
+          <p>Celebration &amp; Event Planner &nbsp;·&nbsp; PromptWars Challenge 05</p>
         </footer>
       </div>
     </>

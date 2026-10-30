@@ -10,11 +10,11 @@ import AiInsights from './AiInsights.jsx';
  */
 
 const NAV_SECTIONS = [
-  { id: 'budget', label: '💰 Budget' },
-  { id: 'timeline', label: '📅 Timeline' },
-  { id: 'vendors', label: '🤝 Vendors' },
-  { id: 'warnings', label: '⚠️ Alerts' },
-  { id: 'ai-insights', label: '✨ AI Insights' },
+  { id: 'budget', label: 'Budget' },
+  { id: 'timeline', label: 'Timeline' },
+  { id: 'vendors', label: 'Vendors' },
+  { id: 'warnings', label: 'Alerts' },
+  { id: 'ai-insights', label: 'AI Insights' },
 ];
 
 function formatINR(amount) {
@@ -39,7 +39,7 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
         <div className="dashboard-hero-inner">
           {isSample && (
             <div className="sample-ribbon" role="status" aria-live="polite">
-              🎉 Sample Plan — No API call needed
+              Sample Plan Demonstration
             </div>
           )}
 
@@ -53,14 +53,13 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
           {eventMeta && (
             <div className="dashboard-meta-chips" role="list" aria-label="Event details">
               {eventMeta.city && (
-                <span className="meta-chip" role="listitem">📍 {eventMeta.city}</span>
+                <span className="meta-chip" role="listitem">City: {eventMeta.city}</span>
               )}
               {eventMeta.guestCount && (
-                <span className="meta-chip" role="listitem">👥 {eventMeta.guestCount} guests</span>
+                <span className="meta-chip" role="listitem">{eventMeta.guestCount} guests</span>
               )}
               {eventMeta.eventDate && (
                 <span className="meta-chip" role="listitem">
-                  📅{' '}
                   {new Date(eventMeta.eventDate + 'T00:00:00').toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'long',
@@ -69,25 +68,27 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
                 </span>
               )}
               <span className="meta-chip meta-chip--budget" role="listitem">
-                💰 {formatINR(totalBudget)}
+                Total Budget: {formatINR(totalBudget)}
               </span>
             </div>
           )}
 
           {aiEnhanced ? (
             <p className="dashboard-ai-label">
-              ✨ Enriched with Gemini AI · Culturally curated for your event
+              Enriched with Gemini AI · Culturally tailored for your celebration
             </p>
           ) : (
             <p className="dashboard-ai-label">
-              🛡️ Rules-engine verified plan · Deterministic &amp; reliable
+              Rules-engine verified plan · Deterministic &amp; reliable
             </p>
           )}
         </div>
 
         {/* Lotus divider */}
         <div className="lotus-divider" aria-hidden="true">
-          <span>❀</span><span>✿</span><span>❀</span>
+          <span className="ornament-line"></span>
+          <span className="ornament-dot">✦</span>
+          <span className="ornament-line"></span>
         </div>
       </header>
 
@@ -126,9 +127,11 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
           />
         </div>
 
-        {/* Floral divider */}
-        <div className="marigold-divider" aria-hidden="true">
-          <span>🌸</span><span>🌼</span><span>🌸</span>
+        {/* Section divider */}
+        <div className="section-divider-bar" aria-hidden="true">
+          <span className="ornament-line"></span>
+          <span className="ornament-dot">✦</span>
+          <span className="ornament-line"></span>
         </div>
 
         {/* Timeline Section */}
@@ -140,8 +143,10 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
           />
         </div>
 
-        <div className="marigold-divider" aria-hidden="true">
-          <span>🌸</span><span>🌼</span><span>🌸</span>
+        <div className="section-divider-bar" aria-hidden="true">
+          <span className="ornament-line"></span>
+          <span className="ornament-dot">✦</span>
+          <span className="ornament-line"></span>
         </div>
 
         {/* Vendors Section */}
@@ -152,8 +157,10 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
           />
         </div>
 
-        <div className="marigold-divider" aria-hidden="true">
-          <span>🌸</span><span>🌼</span><span>🌸</span>
+        <div className="section-divider-bar" aria-hidden="true">
+          <span className="ornament-line"></span>
+          <span className="ornament-dot">✦</span>
+          <span className="ornament-line"></span>
         </div>
 
         {/* Warnings Section */}
@@ -164,8 +171,10 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
           />
         </div>
 
-        <div className="marigold-divider" aria-hidden="true">
-          <span>🌸</span><span>🌼</span><span>🌸</span>
+        <div className="section-divider-bar" aria-hidden="true">
+          <span className="ornament-line"></span>
+          <span className="ornament-dot">✦</span>
+          <span className="ornament-line"></span>
         </div>
 
         {/* AI Insights Section */}
@@ -181,13 +190,13 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
         <div className="dashboard-footer-cta">
           <button
             type="button"
-            className="btn-primary btn-large"
+            className="btn btn--primary btn--large"
             onClick={onBackToForm}
           >
             ← Plan Another Event
           </button>
           <p className="footer-tagline">
-            Made with ❤️ for Indian celebrations &nbsp;·&nbsp; Celebration &amp; Event Planner
+            Celebration &amp; Event Planner
           </p>
         </div>
       </main>

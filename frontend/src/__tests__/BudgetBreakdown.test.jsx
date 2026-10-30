@@ -81,7 +81,7 @@ describe('BudgetBreakdown', () => {
         budgetHealth={MOCK_BUDGET_HEALTH}
       />,
     );
-    expect(screen.getByText(/Smart Trade-off Suggestions/i)).toBeTruthy();
+    expect(screen.getByText(/Trade-off Recommendations/i)).toBeTruthy();
     expect(screen.getByText('Memories last longer.')).toBeTruthy();
   });
 
@@ -93,7 +93,7 @@ describe('BudgetBreakdown', () => {
         budgetHealth={MOCK_BUDGET_HEALTH}
       />,
     );
-    expect(screen.queryByText(/Smart Trade-off/i)).toBeNull();
+    expect(screen.queryByText(/Trade-off Recommendations/i)).toBeNull();
   });
 
   it('shows tight budget health indicator', () => {

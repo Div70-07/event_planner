@@ -55,7 +55,7 @@ describe('Timeline', () => {
   it('shows panic mode banner when panic is enabled', () => {
     render(<Timeline timeline={MOCK_TIMELINE} panicMode={WITH_PANIC} isCompressed={false} />);
     expect(screen.getByRole('alert')).toBeTruthy();
-    expect(screen.getByText(/Panic Mode Active/i)).toBeTruthy();
+    expect(screen.getByText(/Urgent Timeline Notice/i)).toBeTruthy();
   });
 
   it('shows bookToday items in panic banner', () => {

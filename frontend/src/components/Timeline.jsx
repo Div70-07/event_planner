@@ -56,12 +56,11 @@ export default function Timeline({ timeline, panicMode, isCompressed }) {
   return (
     <section className="dashboard-section" aria-labelledby="timeline-heading">
       <div className="section-header">
-        <span className="section-icon" aria-hidden="true">📅</span>
         <h2 id="timeline-heading" className="section-title">
           Planning Timeline
           {isCompressed && (
             <span className="compressed-badge" aria-label="Compressed timeline — event is soon">
-              ⚡ Compressed
+              Compressed Schedule
             </span>
           )}
         </h2>
@@ -81,9 +80,8 @@ export default function Timeline({ timeline, panicMode, isCompressed }) {
       {/* Panic Mode Alert */}
       {panicMode?.enabled && (
         <div className="panic-banner" role="alert">
-          <span className="panic-icon" aria-hidden="true">🚨</span>
           <div className="panic-content">
-            <strong>Panic Mode Active — Event is very soon!</strong>
+            <strong>Urgent Timeline Notice: Immediate Action Required</strong>
             {panicMode.bookToday?.length > 0 && (
               <div className="panic-group">
                 <h4 className="panic-group-title">Book TODAY</h4>
@@ -165,7 +163,7 @@ export default function Timeline({ timeline, panicMode, isCompressed }) {
                       />
                       <span className="task-text">{task}</span>
                       {isPanic && (
-                        <span className="panic-pill" aria-label="Urgent">🚨</span>
+                        <span className="panic-pill" aria-label="Urgent">Immediate</span>
                       )}
                     </label>
                   </li>

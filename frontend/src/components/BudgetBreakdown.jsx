@@ -6,9 +6,9 @@ import { Fragment, useState, useCallback } from 'react';
  */
 
 const HEALTH_CONFIG = {
-  comfortable: { icon: '💚', label: 'Comfortable', color: '#15803d', bg: '#dcfce7' },
-  moderate: { icon: '🟡', label: 'Moderate', color: '#b45309', bg: '#fef9c3' },
-  tight: { icon: '🔴', label: 'Tight', color: '#b91c1c', bg: '#fee2e2' },
+  comfortable: { icon: '●', label: 'Comfortable', color: '#15803d', bg: '#dcfce7' },
+  moderate: { icon: '●', label: 'Moderate', color: '#b45309', bg: '#fef9c3' },
+  tight: { icon: '●', label: 'Tight', color: '#b91c1c', bg: '#fee2e2' },
 };
 
 function formatINR(amount) {
@@ -34,7 +34,6 @@ export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth }) {
     <section className="dashboard-section" aria-labelledby="budget-heading">
       {/* Section Header */}
       <div className="section-header">
-        <span className="section-icon" aria-hidden="true">💰</span>
         <h2 id="budget-heading" className="section-title">Budget Breakdown</h2>
       </div>
 
@@ -100,7 +99,7 @@ export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth }) {
                 {expanded === item.key && (
                   <tr key={`${item.key}-rationale`} className="rationale-row">
                     <td colSpan={4}>
-                      <p className="rationale-text">💡 {item.rationale}</p>
+                      <p className="rationale-text">{item.rationale}</p>
                     </td>
                   </tr>
                 )}
@@ -121,7 +120,7 @@ export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth }) {
       {/* Trade-offs */}
       {tradeoffs && tradeoffs.length > 0 && (
         <div className="tradeoffs-section">
-          <h3 className="sub-section-title">💡 Smart Trade-off Suggestions</h3>
+          <h3 className="sub-section-title">Strategic Trade-off Recommendations</h3>
           <ul className="tradeoff-list" role="list">
             {tradeoffs.map((t, i) => (
               <li key={i} className="tradeoff-item">
