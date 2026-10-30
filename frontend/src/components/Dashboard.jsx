@@ -3,14 +3,18 @@ import Timeline from './Timeline.jsx';
 import VendorChecklist from './VendorChecklist.jsx';
 import Warnings from './Warnings.jsx';
 import AiInsights from './AiInsights.jsx';
+import WhatIfSliders from './WhatIfSliders.jsx';
+import RefineChips from './RefineChips.jsx';
 
 /**
  * Dashboard — master container that renders the full event plan.
- * Provides sticky navigation, sample mode label, and back-to-form action.
+ * Provides sticky navigation, sample mode label, interactive what-if sliders,
+ * refine chips, and back-to-form action.
  */
 
 const NAV_SECTIONS = [
   { id: 'budget', label: 'Budget' },
+  { id: 'whatif', label: 'What-If Simulation' },
   { id: 'timeline', label: 'Timeline' },
   { id: 'vendors', label: 'Vendors' },
   { id: 'warnings', label: 'Alerts' },
@@ -25,7 +29,14 @@ function formatINR(amount) {
   }).format(amount);
 }
 
-export default function Dashboard({ result, eventMeta, onBackToForm }) {
+export default function Dashboard({
+  result,
+  eventMeta,
+  onBackToForm,
+  onRefine,
+  isRefining,
+  activeRefineLabel,
+}) {
   const { plan, aiEnhanced, aiNotice, isSample } = result;
   const totalBudget = plan.budget.reduce((s, b) => s + b.amount, 0);
 
@@ -117,6 +128,15 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
 
       {/* ── Main Dashboard Content ────────────────────────────────────── */}
       <main id="dashboard-main" className="dashboard-main" tabIndex={-1}>
+        {/* Quick Refinements bar */}
+        {onRefine && (
+          <RefineChips
+            currentMeta={eventMeta}
+            onRefine={onRefine}
+            isLoading={isRefining}
+            activeRefineLabel={activeRefineLabel}
+          />
+        )}
 
         {/* Budget Section */}
         <div id="budget">
@@ -124,6 +144,23 @@ export default function Dashboard({ result, eventMeta, onBackToForm }) {
             budget={plan.budget}
             tradeoffs={plan.tradeoffs}
             budgetHealth={plan.budgetHealth}
+            guestCount={eventMeta?.guestCount}
+          />
+        </div>
+
+        {/* Section divider */}
+        <div className="section-divider-bar" aria-hidden="true">
+          <span className="ornament-line"></span>
+          <span className="ornament-dot">✦</span>
+          <span className="ornament-line"></span>
+        </div>
+
+        {/* What-If Sliders Simulation Section */}
+        <div id="whatif">
+          <WhatIfSliders
+            initialBudget={plan.budget}
+            initialGuests={eventMeta?.guestCount}
+            totalBudget={totalBudget}
           />
         </div>
 

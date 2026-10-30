@@ -12,6 +12,7 @@ function App() {
   const [apiError, setApiError] = useState('');
   const [planResult, setPlanResult] = useState(null);
   const [eventMeta, setEventMeta] = useState(null);
+  const [activeRefineLabel, setActiveRefineLabel] = useState('');
 
   const handleSelectPreset = (preset) => {
     setSelectedPresetId(preset.id);
@@ -25,6 +26,7 @@ function App() {
     setApiError('');
     setPlanResult(null);
     setEventMeta(null);
+    setActiveRefineLabel('');
   };
 
   const handleFormSubmit = async (formData) => {
@@ -34,14 +36,24 @@ function App() {
     try {
       const response = await generatePlanApi(formData);
       setPlanResult(response);
-      setEventMeta({
-        eventType: formData.eventType,
-        city: formData.city,
-        guestCount: formData.guestCount,
-        eventDate: formData.eventDate,
-      });
+      setEventMeta({ ...formData });
     } catch (err) {
       setApiError(err.message || 'Failed to generate event plan.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRefinePlan = async (updatedFormData, changeLabel) => {
+    setIsLoading(true);
+    setActiveRefineLabel(changeLabel);
+
+    try {
+      const response = await generatePlanApi(updatedFormData);
+      setPlanResult(response);
+      setEventMeta({ ...updatedFormData });
+    } catch (err) {
+      setApiError(err.message || 'Failed to update refined plan.');
     } finally {
       setIsLoading(false);
     }
@@ -51,6 +63,7 @@ function App() {
     setPlanResult(SAMPLE_PLAN);
     setEventMeta(SAMPLE_EVENT_META);
     setApiError('');
+    setActiveRefineLabel('');
   };
 
   // ── Dashboard view ─────────────────────────────────────────────────────
@@ -64,6 +77,9 @@ function App() {
           result={planResult}
           eventMeta={eventMeta}
           onBackToForm={handleFormReset}
+          onRefine={handleRefinePlan}
+          isRefining={isLoading}
+          activeRefineLabel={activeRefineLabel}
         />
       </>
     );

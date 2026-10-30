@@ -19,11 +19,12 @@ function formatINR(amount) {
   }).format(amount);
 }
 
-export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth }) {
+export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth, guestCount }) {
   const [expanded, setExpanded] = useState(null);
 
   const totalAmount = budget.reduce((s, b) => s + b.amount, 0);
   const health = HEALTH_CONFIG[budgetHealth?.status] ?? HEALTH_CONFIG.moderate;
+  const perGuestCost = guestCount && guestCount > 0 ? Math.round(totalAmount / guestCount) : null;
 
   const toggleRow = useCallback(
     (key) => setExpanded((prev) => (prev === key ? null : key)),
@@ -37,7 +38,7 @@ export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth }) {
         <h2 id="budget-heading" className="section-title">Budget Breakdown</h2>
       </div>
 
-      {/* Budget Health Banner */}
+      {/* Budget Health Meter */}
       <div
         className="health-banner"
         style={{ '--health-color': health.color, '--health-bg': health.bg }}
@@ -46,7 +47,14 @@ export default function BudgetBreakdown({ budget, tradeoffs, budgetHealth }) {
       >
         <span className="health-icon" aria-hidden="true">{health.icon}</span>
         <div className="health-text">
-          <strong>{health.label} Budget</strong>
+          <div className="health-title-row">
+            <strong>{health.label} Budget Meter</strong>
+            {perGuestCost && (
+              <span className="health-per-guest">
+                Cost per guest: {formatINR(perGuestCost)} ({guestCount} guests)
+              </span>
+            )}
+          </div>
           <p>{budgetHealth?.message}</p>
         </div>
       </div>

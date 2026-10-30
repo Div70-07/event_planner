@@ -179,12 +179,12 @@ event-planner/
 ## SESSION 9 — Frontend: Standout Features
 **What gets built:** What-if sliders, panic mode view, refine chips, budget health meter, trade-off suggestions.
 
-- [ ] **Budget health meter + cost per guest:** health status has text/icon as well as colour
-- [ ] **Deterministic trade-off suggestions:** displayed with source/destination category, % moved, amount
-- [ ] **What-if sliders:** adjust guest count, decor spend, food spend → totals recompute instantly, **no API call**
-- [ ] **Panic mode view:** event < 14 days → "Book today", "This week", "Can skip" sections displayed prominently
-- [ ] **Refine chips:** "Make it cheaper", "More vegetarian", "Add live music" → updates inputs, recomputes plan, at most one Gemini call
-- [ ] Clear label showing what the refine chip changed
+- [x] **Budget health meter + cost per guest:** health status has text/icon as well as colour
+- [x] **Deterministic trade-off suggestions:** displayed with source/destination category, % moved, amount
+- [x] **What-if sliders:** adjust guest count, decor spend, food spend → totals recompute instantly, **no API call**
+- [x] **Panic mode view:** event < 14 days → "Book today", "This week", "Can skip" sections displayed prominently
+- [x] **Refine chips:** "Make it cheaper", "More vegetarian", "Add live music" → updates inputs, recomputes plan, at most one Gemini call
+- [x] Clear label showing what the refine chip changed
 
 > ✅ **YOU TEST:** Move a what-if slider → totals update instantly without any network request (check DevTools Network tab). Set an event date < 14 days → Panic mode section appears. Click a refine chip → form updates visibly and plan refreshes. Budget health shows text + icon (not just colour).
 
