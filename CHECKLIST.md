@@ -193,11 +193,11 @@ event-planner/
 ## SESSION 10 — Exports & WhatsApp
 **What gets built:** Copy plan, print/PDF stylesheet, .ics calendar export, WhatsApp inquiry links.
 
-- [ ] Export: **copy plan as text** (fallback if clipboard API unavailable)
-- [ ] Export: **print stylesheet** (hides controls, print-friendly layout) for Save as PDF
-- [ ] Export: **Download calendar (.ics)** for dated timeline milestones (no heavy library)
-- [ ] **WhatsApp vendor inquiries:** each vendor row has a link opening `wa.me` with URL-encoded pre-written message (event date, guest count, city, vendor budget share; no private notes)
-- [ ] Export tests: `.ics` valid and text is escaped; WhatsApp URL properly encoded; copy fallback works
+- [x] Export: **copy plan as text** (fallback if clipboard API unavailable)
+- [x] Export: **print stylesheet** (hides controls, print-friendly layout) for Save as PDF
+- [x] Export: **Download calendar (.ics)** for dated timeline milestones (no heavy library)
+- [x] **WhatsApp vendor inquiries:** each vendor row has a link opening `wa.me` with URL-encoded pre-written message (event date, guest count, city, vendor budget share; no private notes)
+- [x] Export tests: `.ics` valid and text is escaped; WhatsApp URL properly encoded; copy fallback works
 
 > ✅ **YOU TEST:** Click "Copy plan" → paste in Notepad, content is readable. Click "Download .ics" → open in a calendar app → events appear on correct dates. Click a WhatsApp link → browser opens wa.me with a pre-filled message. Click Print → print preview shows clean layout without buttons/sliders.
 

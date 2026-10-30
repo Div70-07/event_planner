@@ -5,11 +5,12 @@ import Warnings from './Warnings.jsx';
 import AiInsights from './AiInsights.jsx';
 import WhatIfSliders from './WhatIfSliders.jsx';
 import RefineChips from './RefineChips.jsx';
+import ExportBar from './ExportBar.jsx';
 
 /**
  * Dashboard — master container that renders the full event plan.
  * Provides sticky navigation, sample mode label, interactive what-if sliders,
- * refine chips, and back-to-form action.
+ * refine chips, exports toolbar, and back-to-form action.
  */
 
 const NAV_SECTIONS = [
@@ -49,7 +50,7 @@ export default function Dashboard({
 
         <div className="dashboard-hero-inner">
           {isSample && (
-            <div className="sample-ribbon" role="status" aria-live="polite">
+            <div className="sample-ribbon no-print" role="status" aria-live="polite">
               Sample Plan Demonstration
             </div>
           )}
@@ -104,7 +105,7 @@ export default function Dashboard({
       </header>
 
       {/* ── Sticky Navigation ─────────────────────────────────────────── */}
-      <nav className="dashboard-nav" aria-label="Plan sections">
+      <nav className="dashboard-nav no-print" aria-label="Plan sections">
         <div className="dashboard-nav-inner">
           {NAV_SECTIONS.map((s) => (
             <a
@@ -128,14 +129,19 @@ export default function Dashboard({
 
       {/* ── Main Dashboard Content ────────────────────────────────────── */}
       <main id="dashboard-main" className="dashboard-main" tabIndex={-1}>
+        {/* Export & Sharing toolbar */}
+        <ExportBar plan={plan} eventMeta={eventMeta} />
+
         {/* Quick Refinements bar */}
         {onRefine && (
-          <RefineChips
-            currentMeta={eventMeta}
-            onRefine={onRefine}
-            isLoading={isRefining}
-            activeRefineLabel={activeRefineLabel}
-          />
+          <div className="no-print">
+            <RefineChips
+              currentMeta={eventMeta}
+              onRefine={onRefine}
+              isLoading={isRefining}
+              activeRefineLabel={activeRefineLabel}
+            />
+          </div>
         )}
 
         {/* Budget Section */}
@@ -156,7 +162,7 @@ export default function Dashboard({
         </div>
 
         {/* What-If Sliders Simulation Section */}
-        <div id="whatif">
+        <div id="whatif" className="no-print">
           <WhatIfSliders
             initialBudget={plan.budget}
             initialGuests={eventMeta?.guestCount}
@@ -165,7 +171,7 @@ export default function Dashboard({
         </div>
 
         {/* Section divider */}
-        <div className="section-divider-bar" aria-hidden="true">
+        <div className="section-divider-bar no-print" aria-hidden="true">
           <span className="ornament-line"></span>
           <span className="ornament-dot">✦</span>
           <span className="ornament-line"></span>
@@ -191,6 +197,7 @@ export default function Dashboard({
           <VendorChecklist
             vendors={plan.vendors}
             totalBudget={totalBudget}
+            eventMeta={eventMeta}
           />
         </div>
 
@@ -224,7 +231,7 @@ export default function Dashboard({
         </div>
 
         {/* Back to Form CTA */}
-        <div className="dashboard-footer-cta">
+        <div className="dashboard-footer-cta no-print">
           <button
             type="button"
             className="btn btn--primary btn--large"

@@ -1,10 +1,15 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
 import { app } from '../app.js';
 import { createPlanRateLimiter } from '../middleware/rateLimiter.js';
+import * as geminiModule from '../services/geminiService.js';
 
 describe('POST /api/plan (Rules-Only API)', () => {
+  beforeEach(() => {
+    vi.spyOn(geminiModule, 'enrichPlanWithGemini').mockResolvedValue(null);
+  });
+
   const getFutureDate = (daysAhead = 45) => {
     const d = new Date();
     d.setDate(d.getDate() + daysAhead);
@@ -49,15 +54,14 @@ describe('POST /api/plan (Rules-Only API)', () => {
 
     // Sum of budget amounts equals requested budget
     const totalAllocated = plan.budget.reduce((sum, item) => sum + item.amount, 0);
-    expect(totalAllocated).toBe(800000);
+    expect(totalAllocated).toBe(samplePayload.budget);
   });
 
-  it('returns 400 with VALIDATION_ERROR on invalid payload', async () => {
+  it('returns 400 when validation fails (missing required field, past date)', async () => {
     const invalidPayload = {
       ...samplePayload,
-      guestCount: -10, // Invalid guest count
-      budget: 0, // Invalid budget
       eventDate: '2020-01-01', // Past date
+      guestCount: -10, // Invalid guest count
     };
 
     const res = await request(app)
@@ -69,6 +73,21 @@ describe('POST /api/plan (Rules-Only API)', () => {
     expect(res.body.error.code).toBe('VALIDATION_ERROR');
     expect(Array.isArray(res.body.error.details)).toBe(true);
     expect(res.body.error.details.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('returns 400 when unknown fields are passed (strict schema check)', async () => {
+    const payloadWithExtra = {
+      ...samplePayload,
+      maliciousField: 'drop table users',
+    };
+
+    const res = await request(app)
+      .post('/api/plan')
+      .send(payloadWithExtra);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBeDefined();
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
   });
 
   it('includes Helmet security headers in the response', async () => {

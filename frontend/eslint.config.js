@@ -28,6 +28,7 @@ export default [
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         Intl: 'readonly',
+        navigator: 'readonly',
       },
     },
     settings: {

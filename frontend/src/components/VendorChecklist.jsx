@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
+import { buildVendorWhatsappLink } from '../utils/exportUtils.js';
 
 /**
  * VendorChecklist — vendor cards with tickable checklist items,
- * WhatsApp inquiry button, and overall progress bar.
+ * WhatsApp inquiry button with complete context, and overall progress bar.
  * State persists in localStorage under event_planner_checklist_vendors.
  */
 
@@ -25,13 +26,6 @@ function saveChecked(state) {
   }
 }
 
-function buildWhatsappLink(vendorType) {
-  const msg = encodeURIComponent(
-    `Hi! I'm planning an event and would like to enquire about your ${vendorType} services. Could you share your availability and pricing?`,
-  );
-  return `https://wa.me/?text=${msg}`;
-}
-
 function formatINR(amount) {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -40,7 +34,7 @@ function formatINR(amount) {
   }).format(amount);
 }
 
-export default function VendorChecklist({ vendors, totalBudget }) {
+export default function VendorChecklist({ vendors, totalBudget, eventMeta }) {
   const [checked, setChecked] = useState(loadChecked);
 
   useEffect(() => {
@@ -135,9 +129,9 @@ export default function VendorChecklist({ vendors, totalBudget }) {
                 ))}
               </ul>
 
-              {/* WhatsApp Inquiry Button */}
+              {/* WhatsApp Inquiry Button with context */}
               <a
-                href={buildWhatsappLink(vendor.type)}
+                href={buildVendorWhatsappLink(vendor, eventMeta)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="whatsapp-btn"

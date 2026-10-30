@@ -10,7 +10,7 @@ function loadEnv() {
   const port = parseInt(process.env.PORT || '4000', 10);
   const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
   const geminiApiKey = process.env.GEMINI_API_KEY || '';
-  const geminiModel = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  const geminiModel = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 
   const errors = [];
 
