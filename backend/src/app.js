@@ -45,7 +45,7 @@ app.use('/api', planRouter);
 
 // Static frontend serving in production (single live URL deployment)
 if (env.isProduction) {
-  const distPath = path.resolve(__dirname, '../../../frontend/dist');
+  const distPath = path.resolve(__dirname, '../../frontend/dist');
   app.use(express.static(distPath));
 
   app.get('*', (req, res, next) => {
