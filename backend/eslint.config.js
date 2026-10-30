@@ -13,6 +13,8 @@ export default [
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         Buffer: 'readonly',
+        fetch: 'readonly',
+        AbortController: 'readonly',
       },
     },
     rules: {

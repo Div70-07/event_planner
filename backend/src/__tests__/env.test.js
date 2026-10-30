@@ -27,10 +27,19 @@ describe('Environment Config (env.js)', () => {
     expect(config.corsOrigin).toEqual(['http://localhost:5173', 'https://example.com']);
   });
 
-  it('throws in production if GEMINI_API_KEY is missing', () => {
+  it('throws in production if both GEMINI_API_KEY and OPENROUTER_API_KEY are missing', () => {
     process.env.NODE_ENV = 'production';
     delete process.env.GEMINI_API_KEY;
-    expect(() => loadEnv()).toThrow(/GEMINI_API_KEY is required in production/);
+    delete process.env.OPENROUTER_API_KEY;
+    expect(() => loadEnv()).toThrow(/Either OPENROUTER_API_KEY or GEMINI_API_KEY is required in production/);
+  });
+
+  it('allows production if OPENROUTER_API_KEY is provided without GEMINI_API_KEY', () => {
+    process.env.NODE_ENV = 'production';
+    delete process.env.GEMINI_API_KEY;
+    process.env.OPENROUTER_API_KEY = 'test-openrouter-key';
+    const config = loadEnv();
+    expect(config.openRouterApiKey).toBe('test-openrouter-key');
   });
 
   it('throws if PORT is invalid', () => {

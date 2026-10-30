@@ -3,7 +3,7 @@ import { env } from '../config/env.js';
 import { SYSTEM_INSTRUCTION, buildEnrichmentPrompt } from '../prompts/planPrompt.js';
 import { aiEnrichmentSchema } from '../schemas/aiEnrichmentSchema.js';
 
-const TIMEOUT_MS = 15000; // 15s timeout
+const TIMEOUT_MS = 45000; // 45s timeout limit for full LLM responses
 
 /**
  * Strips markdown code blocks if the model wrapped JSON output in ```json ... ```
@@ -25,9 +25,51 @@ function cleanJsonString(rawText) {
 }
 
 /**
- * Calls Gemini with a 15-second timeout limit.
+ * Calls OpenRouter chat completions API with timeout and robust error handling.
  */
-async function callGeminiWithTimeout(aiClient, promptText) {
+async function callOpenRouter(promptText) {
+  const payload = {
+    model: env.openRouterModel,
+    temperature: 0.6,
+    max_tokens: 1500,
+    messages: [
+      { role: 'system', content: SYSTEM_INSTRUCTION },
+      { role: 'user', content: promptText },
+    ],
+  };
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const res = await fetch(`${env.openRouterBaseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.openRouterApiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'http://localhost:5173',
+        'X-Title': 'Celebration and Event Planner',
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`OpenRouter HTTP ${res.status}: ${errorText}`);
+    }
+
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || '';
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * Calls direct Google Gemini API with timeout limit.
+ */
+async function callGemini(aiClient, promptText) {
   const apiPromise = aiClient.models.generateContent({
     model: env.geminiModel,
     contents: promptText,
@@ -43,11 +85,12 @@ async function callGeminiWithTimeout(aiClient, promptText) {
     setTimeout(() => reject(new Error('GEMINI_TIMEOUT: Request exceeded 15 seconds')), TIMEOUT_MS);
   });
 
-  return Promise.race([apiPromise, timeoutPromise]);
+  const response = await Promise.race([apiPromise, timeoutPromise]);
+  return response?.text || response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
 /**
- * Enriches a rules-generated event plan using Gemini AI.
+ * Enriches a rules-generated event plan using OpenRouter or Gemini AI.
  * Returns null if anything fails, allowing graceful rules-only fallback.
  *
  * @param {Object} input - Validated plan request body
@@ -56,26 +99,37 @@ async function callGeminiWithTimeout(aiClient, promptText) {
  * @returns {Promise<Object|null>} Validated enrichment object or null on failure
  */
 export async function enrichPlanWithGemini(input, rulesPlan, injectedClient = null) {
-  // If no API key configured, gracefully fall back immediately
-  if (!env.geminiApiKey && !injectedClient) {
+  const hasOpenRouter = Boolean(env.openRouterApiKey);
+  const hasGemini = Boolean(env.geminiApiKey) || Boolean(injectedClient);
+
+  // If no AI key is configured, gracefully fall back immediately
+  if (!hasOpenRouter && !hasGemini) {
     if (env.nodeEnv !== 'test') {
-      console.warn('[GeminiService] No GEMINI_API_KEY found; falling back to rules-only plan.');
+      console.warn('[AIService] No OPENROUTER_API_KEY or GEMINI_API_KEY found; falling back to rules-only plan.');
     }
     return null;
   }
 
-  const aiClient = injectedClient || new GoogleGenAI({ apiKey: env.geminiApiKey });
   const prompt = buildEnrichmentPrompt(input, rulesPlan);
-
-  // Attempt up to 2 tries (initial + 1 retry on invalid JSON)
   const maxAttempts = 2;
+
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      const response = await callGeminiWithTimeout(aiClient, prompt);
-      const rawText = response?.text || response?.candidates?.[0]?.content?.parts?.[0]?.text;
+      let rawText = '';
+
+      if (injectedClient) {
+        rawText = await callGemini(injectedClient, prompt);
+      } else if (hasOpenRouter) {
+        // Preferred: OpenRouter API
+        rawText = await callOpenRouter(prompt);
+      } else {
+        // Direct Gemini SDK
+        const aiClient = new GoogleGenAI({ apiKey: env.geminiApiKey });
+        rawText = await callGemini(aiClient, prompt);
+      }
 
       if (!rawText) {
-        throw new Error('Empty response text from Gemini');
+        throw new Error('Empty response text from AI provider');
       }
 
       const cleaned = cleanJsonString(rawText);
@@ -89,9 +143,9 @@ export async function enrichPlanWithGemini(input, rulesPlan, injectedClient = nu
 
       return validation.data;
     } catch (err) {
-      if (attempt === maxAttempts || err.message?.includes('GEMINI_TIMEOUT')) {
+      if (attempt === maxAttempts || err.name === 'AbortError' || err.message?.includes('TIMEOUT')) {
         if (env.nodeEnv !== 'test') {
-          console.warn(`[GeminiService] AI enrichment failed (${err.message}); falling back to rules plan.`);
+          console.warn(`[AIService] AI enrichment failed (${err.message}); falling back to rules plan.`);
         }
         return null;
       }
