@@ -18,20 +18,23 @@ const app = express();
 app.use(helmet());
 
 // CORS — allow-list from environment
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. curl, server-to-server, or same-origin)
-      if (!origin || env.corsOrigin.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-  })
-);
+// CORS is only needed during local development.
+// Production frontend and API share the same origin.
+if (!env.isProduction) {
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        if (!origin || env.corsOrigin.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['Content-Type'],
+    })
+  );
+}
 
 // Body parsing — hard limit 10 KB
 app.use(express.json({ limit: '10kb' }));
